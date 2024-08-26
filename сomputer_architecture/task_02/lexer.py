@@ -1,17 +1,5 @@
-class LexicalError(Exception):
-    pass
-
-
-class SyntaxError(Exception):
-    pass
-
-
-class TokenType:
-    INTEGER = "INTEGER"
-    PLUS = "PLUS"
-    MINUS = "MINUS"
-    EQUAL = "EQUAL"
-    EOF = "EOF"  # Означає кінець вхідного рядка
+from utils import TokenType
+from errors import LexicalError
 
 
 class Token:
@@ -49,12 +37,8 @@ class Lexer:
             result += self.current_char
             self.advance()
         return int(result)
-    
-    def __str__(self) -> str:
-        return f"Lexer({self.text}, {self.pos}, {self.current_char})"
 
     def get_next_token(self):
-        """Лексичний аналізатор, що розбиває вхідний рядок на токени."""
         while self.current_char is not None:
             if self.current_char.isspace():
                 self.skip_whitespace()
@@ -70,31 +54,23 @@ class Lexer:
             if self.current_char == "-":
                 self.advance()
                 return Token(TokenType.MINUS, "-")
-            
-            if self.current_char == "=":
+
+            if self.current_char == "*":
                 self.advance()
-                return Token(TokenType.EQUAL, "=")
+                return Token(TokenType.MUL, "*")
+
+            if self.current_char == "/":
+                self.advance()
+                return Token(TokenType.DIV, "/")
+
+            if self.current_char == "(":
+                self.advance()
+                return Token(TokenType.LPAREN, "(")
+
+            if self.current_char == ")":
+                self.advance()
+                return Token(TokenType.RPAREN, ")")
 
             raise LexicalError("Помилка лексичного аналізу")
 
         return Token(TokenType.EOF, None)
-
-
-def main():
-    while True:
-        try:
-            text = input('Введіть вираз (або "exit" для виходу): ')
-            if text.lower() == "exit":
-                print("Вихід із програми.")
-                break
-            lexer = Lexer(text)
-            token = lexer.get_next_token()
-            while token.type != TokenType.EOF:
-                print(token)
-                token = lexer.get_next_token()
-        except Exception as e:
-            print("Помилка:", e)
-
-
-if __name__ == "__main__":
-    main()

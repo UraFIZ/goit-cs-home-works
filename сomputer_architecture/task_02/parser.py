@@ -1,16 +1,5 @@
-class LexicalError(Exception):
-    pass
-
-
-class ParsingError(Exception):
-    pass
-
-
-class TokenType:
-    INTEGER = "INTEGER"
-    PLUS = "PLUS"
-    MINUS = "MINUS"
-    EOF = "EOF"  # Означає кінець вхідного рядка
+from utils import TokenType
+from errors import LexicalError, ParsingError
 
 
 class Token:
@@ -48,6 +37,9 @@ class Lexer:
             result += self.current_char
             self.advance()
         return int(result)
+    
+    def __str__(self) -> str:
+        return f"Lexer({self.text}, {self.pos}, {self.current_char})"
 
     def get_next_token(self):
         """Лексичний аналізатор, що розбиває вхідний рядок на токени."""
@@ -62,10 +54,26 @@ class Lexer:
             if self.current_char == "+":
                 self.advance()
                 return Token(TokenType.PLUS, "+")
+            
+            if self.current_char == "*":
+                self.advance()
+                return Token(TokenType.MUL, "*")
 
             if self.current_char == "-":
                 self.advance()
                 return Token(TokenType.MINUS, "-")
+            
+            if self.current_char == "/":
+                self.advance()
+                return Token(TokenType.DIV, "/")
+            
+            if self.current_char == "(":
+                self.advance()
+                return Token(TokenType.LPAREN, "(")
+            
+            if self.current_char == ")":
+                self.advance()
+                return Token(TokenType.RPAREN, ")")
 
             raise LexicalError("Помилка лексичного аналізу")
 
@@ -96,6 +104,18 @@ class Parser:
 
     def error(self):
         raise ParsingError("Помилка синтаксичного аналізу")
+    
+    def factor(self):
+        """Парсер для чисел або виразів у дужках."""
+        token = self.current_token
+        if token.type == TokenType.INTEGER:
+            self.eat(TokenType.INTEGER)
+            return Num(token)
+        elif token.type == TokenType.LPAREN:
+            self.eat(TokenType.LPAREN)
+            node = self.expr()
+            self.eat(TokenType.RPAREN)
+            return node
 
     def eat(self, token_type):
         """
@@ -108,13 +128,23 @@ class Parser:
             self.error()
 
     def term(self):
-        """Парсер для 'term' правил граматики. У нашому випадку - це цілі числа."""
-        token = self.current_token
-        self.eat(TokenType.INTEGER)
-        return Num(token)
+        """Парсер для термів, що включають множення та ділення."""
+        node = self.factor()
+
+        while self.current_token.type in (TokenType.MUL, TokenType.DIV):
+            token = self.current_token
+            if token.type == TokenType.MUL:
+                self.eat(TokenType.MUL)
+            elif token.type == TokenType.DIV:
+                self.eat(TokenType.DIV)
+
+            node = BinOp(left=node, op=token, right=self.factor())
+
+        return node
+
 
     def expr(self):
-        """Парсер для арифметичних виразів."""
+        """Парсер для арифметичних виразів з додаванням та відніманням."""
         node = self.term()
 
         while self.current_token.type in (TokenType.PLUS, TokenType.MINUS):
@@ -144,32 +174,6 @@ def print_ast(node, level=0):
         print(f"{indent}Unknown node type: {type(node)}")
 
 
-class Interpreter:
-    def __init__(self, parser):
-        self.parser = parser
-
-    def visit_BinOp(self, node):
-        if node.op.type == TokenType.PLUS:
-            return self.visit(node.left) + self.visit(node.right)
-        elif node.op.type == TokenType.MINUS:
-            return self.visit(node.left) - self.visit(node.right)
-
-    def visit_Num(self, node):
-        return node.value
-
-    def interpret(self):
-        tree = self.parser.expr()
-        return self.visit(tree)
-
-    def visit(self, node):
-        method_name = "visit_" + type(node).__name__
-        visitor = getattr(self, method_name, self.generic_visit)
-        return visitor(node)
-
-    def generic_visit(self, node):
-        raise Exception(f"Немає методу visit_{type(node).__name__}")
-
-
 def main():
     while True:
         try:
@@ -179,9 +183,8 @@ def main():
                 break
             lexer = Lexer(text)
             parser = Parser(lexer)
-            interpreter = Interpreter(parser)
-            result = interpreter.interpret()
-            print(result)
+            tree = parser.expr()
+            print_ast(tree)
         except Exception as e:
             print(e)
 
