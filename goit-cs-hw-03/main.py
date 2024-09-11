@@ -1,6 +1,6 @@
 from models import create_tables, insert_initial_statuses
 from seed import seed_data
-from database import get_db_connection
+from database import execute_query
 from psycopg2 import OperationalError
 
 def main():
@@ -12,22 +12,28 @@ def main():
         # Заповнення тестовими даними
         seed_data()
         
-        # Тестовий запит
-        conn = get_db_connection()
-        cur = conn.cursor()
-        cur.execute("SELECT * FROM users LIMIT 5")
-        users = cur.fetchall()
-        cur.execute("SELECT * FROM tasks LIMIT 5")
-        tasks = cur.fetchall()
-        print("Sample users:")
-        for user in users:
-            print(user)
-        
-        cur.close()
-        conn.close()
+        # Виведення всіх користувачів
+        users = execute_query("SELECT * FROM users LIMIT 5")
+        if users is not None:
+            print("All users:")
+            for user in users:
+                print(user)
+        else:
+            print("Failed to retrieve users")
+
+        # Виведення всіх завдань
+        tasks = execute_query("SELECT * FROM tasks LIMIT 5")
+        if tasks is not None:
+            print("\nAll tasks:")
+            for task in tasks:
+                print(task)
+        else:
+            print("Failed to retrieve tasks")
+
     except OperationalError as e:
-        print(f"Error: {e}")
-        # Optionally, you can log the error or take other actions here
+        print(f"Fatal error: {e}")
+    except Exception as e:
+        print(f"An unexpected error occurred: {e}")
 
 if __name__ == "__main__":
     main()

@@ -1,4 +1,5 @@
-from database import get_db_connection
+from database import execute_query
+from psycopg2 import OperationalError
 
 def create_tables():
     commands = (
@@ -25,23 +26,26 @@ def create_tables():
         )
         """)
     
-    conn = get_db_connection()
-    cur = conn.cursor()
-    for command in commands:
-        cur.execute(command)
-    cur.close()
-    conn.commit()
-    conn.close()
+    try:
+        for command in commands:
+            execute_query(command)
+        print("Tables created successfully")
+    except OperationalError as e:
+        print(f"Error creating tables: {e}")
+        raise
 
 def insert_initial_statuses():
-    conn = get_db_connection()
-    cur = conn.cursor()
-    cur.execute("INSERT INTO status (name) VALUES ('new'), ('in progress'), ('completed') ON CONFLICT (name) DO NOTHING")
-    conn.commit()
-    cur.close()
-    conn.close()
+    query = "INSERT INTO status (name) VALUES ('new'), ('in progress'), ('completed') ON CONFLICT (name) DO NOTHING"
+    try:
+        execute_query(query)
+        print("Initial statuses inserted successfully")
+    except OperationalError as e:
+        print(f"Error inserting initial statuses: {e}")
+        raise
 
 if __name__ == "__main__":
-    create_tables()
-    insert_initial_statuses()
-    print("Tables created successfully")
+    try:
+        create_tables()
+        insert_initial_statuses()
+    except OperationalError as e:
+        print(f"Database operation failed: {e}")
