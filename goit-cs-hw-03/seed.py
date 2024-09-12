@@ -1,11 +1,16 @@
 from faker import Faker
 from database import execute_query
 import random
-from psycopg2 import OperationalError
 
 fake = Faker()
 
 def seed_data():
+    # Перевірка наявності даних
+    existing_users = execute_query("SELECT COUNT(*) FROM users")
+    if existing_users and existing_users[0][0] > 0:
+        print("Data already exists. Skipping seed process.")
+        return
+
     try:
         # Додавання користувачів
         for _ in range(10):
@@ -33,12 +38,6 @@ def seed_data():
                           (title, description, status_id, user_id))
 
         print("Database seeded successfully")
-    except (OperationalError, ValueError) as e:
-        print(f"Error seeding database: {e}")
-        raise e
-
-if __name__ == "__main__":
-    try:
-        seed_data()
     except Exception as e:
-        print(f"Seeding failed: {e}")
+        print(f"Error seeding database: {e}")
+        raise
