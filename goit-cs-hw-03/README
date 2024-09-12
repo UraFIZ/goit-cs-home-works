@@ -1,1 +1,5 @@
+1. Run `python3 main.py` without starting the Docker container to check out my fancy feature of requesting the connection to the database.
+2. Run `docker-compose up` to start the container and run `python3 main.py` again to see the connection to the database and all the examples of the queries.
+
+```shell
 docker run --name some-postgres -p 5432:5432 -e POSTGRES_PASSWORD=mysecretpassword -d postgres
