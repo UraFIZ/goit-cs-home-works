@@ -56,7 +56,24 @@ class CatOperations:
                 {"name": name},
                 {"$set": {"age": new_age}}
             )
-            print("result.modified_count", result.modified_count)
+            
+            if result.matched_count == 0:
+                print(f"Кота з ім'ям '{name}' не знайдено в базі даних.")
+                return False
+            elif result.matched_count == 1 and result.modified_count == 0:
+                print(f"Кота '{name}' знайдено, але вік не змінено. Можливо, вказаний вік вже встановлено.")
+                return False
+            elif result.matched_count == 1 and result.modified_count == 1:
+                print(f"Вік кота '{name}' успішно оновлено до {new_age}.")
+                return True
+            else:
+                print("Несподіваний результат оновлення.")
+                
+            print("Детальна інформація про результат:")
+            print(f"Знайдено документів: {result.matched_count}")
+            print(f"Змінено документів: {result.modified_count}")
+            print(f"Підтверджено сервером: {result.acknowledged}")
+            
             return result.modified_count > 0
         except Exception as inner_e:
             logging.error("Помилка при оновленні віку кота: %s", inner_e)
