@@ -12,30 +12,34 @@ def save_to_local_storage(message):
     storage_path = os.path.join('client', 'storage', 'data.json')
     logging.info(f"Спроба зберегти повідомлення локально: {message}")
     try:
-        with open(storage_path, 'r+') as file:
-            try:
-                data = json.load(file)
-            except json.JSONDecodeError:
-                logging.info("Файл data.json порожній або пошкоджений. Створюємо новий список.")
-                data = []
-            data.append(message)
-            file.seek(0)
-            json.dump(data, file, indent=2)
-        logging.info(f"Повідомлення успішно збережено локально: {message}")
-    except FileNotFoundError:
-        logging.info(f"Файл {storage_path} не знайдено. Створюємо новий.")
+        # Читаємо існуючі дані
+        if os.path.exists(storage_path):
+            with open(storage_path, 'r') as file:
+                try:
+                    data = json.load(file)
+                    if not isinstance(data, list):
+                        data = []
+                except json.JSONDecodeError:
+                    data = []
+        else:
+            data = []
+        
+        # Додаємо нове повідомлення
+        data.append(message)
+        
+        # Записуємо оновлені дані
         with open(storage_path, 'w') as file:
-            json.dump([message], file, indent=2)
+            json.dump(data, file, indent=2)
+        
+        logging.info(f"Повідомлення успішно збережено локально")
     except Exception as e:
-        logging.info(f"Помилка при збереженні локально: {e}")
-    logging.info(f"Повідомлення збережено локально: {message}")
+        logging.error(f"Помилка при збереженні локально: {str(e)}")
 
 def run_socket_server():
     server_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     server_address = ('0.0.0.0', 5000)
     server_socket.bind(server_address)
 
-    logging.info(f"Запущено UDP-сервер на {server_address[0]}:{server_address[1]}")
     logging.info(f"Запущено UDP-сервер на {server_address[0]}:{server_address[1]}")
 
     try:
@@ -91,5 +95,4 @@ if __name__ == "__main__":
     try:
         run_socket_server()
     except Exception as e:
-        logging.info(f"Критична помилка: {e}")
         logging.error(f"Критична помилка: {e}")
