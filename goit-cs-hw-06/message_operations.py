@@ -36,7 +36,6 @@ class DatabaseConnection:
             self.client = MongoClient(mongo_uri, tlsCAFile=certifi.where())
             self.client.admin.command('ping')  # Перевірка з'єднання
             self.db = self.client["message_database"]
-            logging.info("Успішно підключено до бази даних")
         except ConnectionFailure as connection_failure_error:
             logging.error("Помилка підключення до бази даних: %s", connection_failure_error)
             sys.exit(1)
@@ -47,13 +46,11 @@ class DatabaseConnection:
         try:
             return self.db[collection_name]
         except CollectionInvalid as collection_invalid_error:
-            logging.error("Помилка при отриманні колекції '%s': %s", collection_name, collection_invalid_error)
             sys.exit(1)
 
     def close_connection(self):
         if self.client is not None:
             self.client.close()
-            logging.info("З'єднання з базою даних закрито")
             self.client = None
             self.db = None
 
@@ -72,7 +69,6 @@ class MessageOperations:
                 "message": message
             }
             result = self.collection.insert_one(document)
-            logging.info(f"Повідомлення збережено з id: {result.inserted_id}")
             return str(result.inserted_id)
         except Exception as e:
             logging.error(f"Помилка при збереженні повідомлення: {e}")
