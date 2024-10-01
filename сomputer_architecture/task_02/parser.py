@@ -159,19 +159,19 @@ class Parser:
         return node
 
 
-def print_ast(node, level=0):
+def logging.info_ast(node, level=0):
     indent = "  " * level
     if isinstance(node, Num):
-        print(f"{indent}Num({node.value})")
+        logging.info(f"{indent}Num({node.value})")
     elif isinstance(node, BinOp):
-        print(f"{indent}BinOp:")
-        print(f"{indent}  left: ")
-        print_ast(node.left, level + 2)
-        print(f"{indent}  op: {node.op.type}")
-        print(f"{indent}  right: ")
-        print_ast(node.right, level + 2)
+        logging.info(f"{indent}BinOp:")
+        logging.info(f"{indent}  left: ")
+        logging.info_ast(node.left, level + 2)
+        logging.info(f"{indent}  op: {node.op.type}")
+        logging.info(f"{indent}  right: ")
+        logging.info_ast(node.right, level + 2)
     else:
-        print(f"{indent}Unknown node type: {type(node)}")
+        logging.info(f"{indent}Unknown node type: {type(node)}")
 
 
 def main():
@@ -179,14 +179,14 @@ def main():
         try:
             text = input('Введіть вираз (або "exit" для виходу): ')
             if text.lower() == "exit":
-                print("Вихід із програми.")
+                logging.info("Вихід із програми.")
                 break
             lexer = Lexer(text)
             parser = Parser(lexer)
             tree = parser.expr()
-            print_ast(tree)
+            logging.info_ast(tree)
         except Exception as e:
-            print(e)
+            logging.info(e)
 
 
 if __name__ == "__main__":

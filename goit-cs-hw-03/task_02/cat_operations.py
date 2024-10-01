@@ -58,21 +58,21 @@ class CatOperations:
             )
             
             if result.matched_count == 0:
-                print(f"Кота з ім'ям '{name}' не знайдено в базі даних.")
+                logging.info(f"Кота з ім'ям '{name}' не знайдено в базі даних.")
                 return False
             elif result.matched_count == 1 and result.modified_count == 0:
-                print(f"Кота '{name}' знайдено, але вік не змінено. Можливо, вказаний вік вже встановлено.")
+                logging.info(f"Кота '{name}' знайдено, але вік не змінено. Можливо, вказаний вік вже встановлено.")
                 return False
             elif result.matched_count == 1 and result.modified_count == 1:
-                print(f"Вік кота '{name}' успішно оновлено до {new_age}.")
+                logging.info(f"Вік кота '{name}' успішно оновлено до {new_age}.")
                 return True
             else:
-                print("Несподіваний результат оновлення.")
+                logging.info("Несподіваний результат оновлення.")
                 
-            print("Детальна інформація про результат:")
-            print(f"Знайдено документів: {result.matched_count}")
-            print(f"Змінено документів: {result.modified_count}")
-            print(f"Підтверджено сервером: {result.acknowledged}")
+            logging.info("Детальна інформація про результат:")
+            logging.info(f"Знайдено документів: {result.matched_count}")
+            logging.info(f"Змінено документів: {result.modified_count}")
+            logging.info(f"Підтверджено сервером: {result.acknowledged}")
             
             return result.modified_count > 0
         except Exception as inner_e:

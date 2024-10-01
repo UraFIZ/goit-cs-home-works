@@ -29,52 +29,52 @@ def main():
         # Заповнення тестовими даними
         seed_data()
 
-        print("Tasks for user with id 1:")
-        print(format_query_result(get_user_tasks(1), 'tasks'))
+        logging.info("Tasks for user with id 1:")
+        logging.info(format_query_result(get_user_tasks(1), 'tasks'))
 
-        print("\nTasks with 'new' status:")
-        print(format_query_result(get_tasks_by_status('new'), 'tasks'))
+        logging.info("\nTasks with 'new' status:")
+        logging.info(format_query_result(get_tasks_by_status('new'), 'tasks'))
 
-        print("\nUpdating task 1 status to 'in progress':")
+        logging.info("\nUpdating task 1 status to 'in progress':")
         update_task_status(1, 'in progress')
 
-        print("\nUsers without tasks:")
-        print(format_query_result(get_users_without_tasks(), 'users'))
+        logging.info("\nUsers without tasks:")
+        logging.info(format_query_result(get_users_without_tasks(), 'users'))
 
-        print("\nAdding new task:")
+        logging.info("\nAdding new task:")
         add_new_task("New task", "Description", 1, 1)
 
-        print("\nUncompleted tasks:")
-        print(format_query_result(get_uncompleted_tasks(), 'tasks'))
+        logging.info("\nUncompleted tasks:")
+        logging.info(format_query_result(get_uncompleted_tasks(), 'tasks'))
 
-        print("\nDeleting task 1:")
+        logging.info("\nDeleting task 1:")
         delete_task(1)
 
-        print("\nUsers with email containing 'example':")
-        print(format_query_result(find_users_by_email('example'), 'users'))
+        logging.info("\nUsers with email containing 'example':")
+        logging.info(format_query_result(find_users_by_email('example'), 'users'))
 
-        print("\nUpdating user 1 name:")
+        logging.info("\nUpdating user 1 name:")
         update_user_name(1, "New Name")
 
-        print("\nTask count by status:")
-        print(format_query_result(get_task_count_by_status(), 'status_count'))
+        logging.info("\nTask count by status:")
+        logging.info(format_query_result(get_task_count_by_status(), 'status_count'))
 
-        print("\nTasks for users with email domain 'example.com':")
-        print(format_query_result(get_tasks_by_user_email_domain('example.com'), 'tasks'))
+        logging.info("\nTasks for users with email domain 'example.com':")
+        logging.info(format_query_result(get_tasks_by_user_email_domain('example.com'), 'tasks'))
 
-        print("\nTasks without description:")
-        print(format_query_result(get_tasks_without_description(), 'tasks'))
+        logging.info("\nTasks without description:")
+        logging.info(format_query_result(get_tasks_without_description(), 'tasks'))
 
-        print("\nUsers with in-progress tasks:")
-        print(format_query_result(get_users_with_in_progress_tasks(), 'user_tasks'))
+        logging.info("\nUsers with in-progress tasks:")
+        logging.info(format_query_result(get_users_with_in_progress_tasks(), 'user_tasks'))
 
-        print("\nUsers and their task count:")
-        print(format_query_result(get_users_task_count(), 'user_task_count'))
+        logging.info("\nUsers and their task count:")
+        logging.info(format_query_result(get_users_task_count(), 'user_task_count'))
 
     except OperationalError as e:
-        print(f"Fatal error: {e}")
+        logging.info(f"Fatal error: {e}")
     except Exception as e:
-        print(f"An unexpected error occurred: {e}")
+        logging.info(f"An unexpected error occurred: {e}")
 
 
 if __name__ == "__main__":

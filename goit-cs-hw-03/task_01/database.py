@@ -19,7 +19,7 @@ def get_db_connection(retries=3, delay=2):
             )
             return conn
         except OperationalError as e:
-            print(f"Attempt {attempt + 1} of {retries} failed: {e}")
+            logging.info(f"Attempt {attempt + 1} of {retries} failed: {e}")
             attempt += 1
             time.sleep(delay)
     raise OperationalError(f"Could not connect to the database after {retries} attempts")
@@ -37,8 +37,8 @@ def execute_query(query, params=None):
                 if cursor.description:
                     return cursor.fetchall()
     except OperationalError as e:
-        print(f"Database connection failed: {e}")
+        logging.info(f"Database connection failed: {e}")
         raise e
     except Exception as e:
-        print(f"Error executing query: {e}")
+        logging.info(f"Error executing query: {e}")
         raise e

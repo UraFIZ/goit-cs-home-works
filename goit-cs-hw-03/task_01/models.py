@@ -29,18 +29,18 @@ def create_tables():
     try:
         for command in commands:
             execute_query(command)
-        print("Tables created successfully")
+        logging.info("Tables created successfully")
     except OperationalError as e:
-        print(f"Error creating tables: {e}")
+        logging.info(f"Error creating tables: {e}")
         raise
 
 def insert_initial_statuses():
     query = "INSERT INTO status (name) VALUES ('new'), ('in progress'), ('completed') ON CONFLICT (name) DO NOTHING"
     try:
         execute_query(query)
-        print("Initial statuses inserted successfully")
+        logging.info("Initial statuses inserted successfully")
     except OperationalError as e:
-        print(f"Error inserting initial statuses: {e}")
+        logging.info(f"Error inserting initial statuses: {e}")
         raise
 
 if __name__ == "__main__":
@@ -48,4 +48,4 @@ if __name__ == "__main__":
         create_tables()
         insert_initial_statuses()
     except OperationalError as e:
-        print(f"Database operation failed: {e}")
+        logging.info(f"Database operation failed: {e}")

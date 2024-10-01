@@ -50,8 +50,8 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     if args.source is None or args.output is None:
-        print("Ви забули аргументи. Ваша команда в командній строці має відповідати наступній схемі:")
-        print("python3 copy_manager.py /шлях/до/вихідної/папки /шлях/до/папки/призначення")
+        logging.info("Ви забули аргументи. Ваша команда в командній строці має відповідати наступній схемі:")
+        logging.info("python3 copy_manager.py /шлях/до/вихідної/папки /шлях/до/папки/призначення")
         sys.exit(1)
 
     asyncio.run(main(args.source, args.output))

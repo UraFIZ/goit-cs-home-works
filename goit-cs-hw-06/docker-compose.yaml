@@ -1,0 +1,20 @@
+version: '3'
+
+services:
+  web:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      - MONGO_URI=${MONGO_URI}
+    volumes:
+      - ./client:/app/client
+    command: python main.py
+
+  socket_server:
+    build: .
+    environment:
+      - MONGO_URI=${MONGO_URI}
+    volumes:
+      - ./client:/app/client
+    command: python socket_server.py

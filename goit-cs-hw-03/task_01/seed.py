@@ -8,7 +8,7 @@ def seed_data():
     # Перевірка наявності даних
     existing_users = execute_query("SELECT COUNT(*) FROM users")
     if existing_users and existing_users[0][0] > 0:
-        print("Data already exists. Skipping seed process.")
+        logging.info("Data already exists. Skipping seed process.")
         return
 
     try:
@@ -37,7 +37,7 @@ def seed_data():
             execute_query("INSERT INTO tasks (title, description, status_id, user_id) VALUES (%s, %s, %s, %s)",
                           (title, description, status_id, user_id))
 
-        print("Database seeded successfully")
+        logging.info("Database seeded successfully")
     except Exception as e:
-        print(f"Error seeding database: {e}")
+        logging.info(f"Error seeding database: {e}")
         raise

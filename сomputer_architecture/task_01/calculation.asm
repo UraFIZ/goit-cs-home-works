@@ -20,13 +20,13 @@ section .text
 
     ; Виведення результату
     mov ax, [result]
-    call print_num
+    call logging.info_num
 
     ; Завершення програми
     mov ax, 4c00h
     int 21h
 
-print_num:
+logging.info_num:
     ; Проста процедура для виведення числа
     push ax
     push bx
@@ -44,12 +44,12 @@ divide:
     test ax, ax
     jnz divide
 
-print:
+logging.info:
     pop dx
     add dl, '0'
     mov ah, 2
     int 21h
-    loop print
+    loop logging.info
 
     pop dx
     pop cx

@@ -25,7 +25,7 @@ def main():
         files = get_files_list(directory)
         keywords = generate_keywords(5)  # Генеруємо 5 випадкових ключових слів
         
-        print(f"Пошук ключових слів: {keywords}")
+        logging.info(f"Пошук ключових слів: {keywords}")
         
         # Розділяємо файли між потоками
         files_per_thread = len(files) // num_threads
@@ -49,14 +49,14 @@ def main():
         
         merged_results = merge_results(results)
         
-        print("\nРезультати пошуку:")
+        logging.info("\nРезультати пошуку:")
         for keyword, found_files in merged_results.items():
-            print(f"{keyword}: знайдено у {len(found_files)} файлах")
+            logging.info(f"{keyword}: знайдено у {len(found_files)} файлах")
         
-        print(f"\nЧас виконання: {end_time - start_time:.2f} секунд")
+        logging.info(f"\nЧас виконання: {end_time - start_time:.2f} секунд")
     
     except Exception as e:
-        print(f"Виникла помилка: {e}")
+        logging.info(f"Виникла помилка: {e}")
         sys.exit(1)
 
 if __name__ == "__main__":

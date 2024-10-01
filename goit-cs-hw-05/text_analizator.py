@@ -11,7 +11,7 @@ def get_text_from_url(url):
         response.raise_for_status()
         return response.text
     except requests.RequestException as e:
-        print(f"Помилка при завантаженні тексту: {e}")
+        logging.info(f"Помилка при завантаженні тексту: {e}")
         return None
 
 def remove_punctuation(text):
@@ -87,13 +87,13 @@ def main():
     try:
         word_counts = map_reduce(text, search_words if search_words else None)
         if not word_counts:
-            print(f"Не знайдено жодного слова по запиту: {', '.join(search_words)}")
+            logging.info(f"Не знайдено жодного слова по запиту: {', '.join(search_words)}")
             return
-        print("Загальна кількість унікальних слів:", len(word_counts))
-        print("Топ 10 слів:", Counter(word_counts).most_common(10))
+        logging.info("Загальна кількість унікальних слів:", len(word_counts))
+        logging.info("Топ 10 слів:", Counter(word_counts).most_common(10))
         visualize_top_words(word_counts)
     except Exception as e:
-        print(f"Помилка при обробці тексту: {e}")
+        logging.info(f"Помилка при обробці тексту: {e}")
 
 if __name__ == "__main__":
     main()

@@ -13,9 +13,9 @@ def create_files(num_files: int, directory: str = "test_files") -> None:
             filename = os.path.join(directory, f"file_{i}.txt")
             with open(filename, 'w') as f:
                 f.write(faker.text(max_nb_chars=1000))
-        print(f"Створено {num_files} файлів у директорії {directory}")
+        logging.info(f"Створено {num_files} файлів у директорії {directory}")
     except Exception as e:
-        print(f"Помилка при створенні файлів: {e}")
+        logging.info(f"Помилка при створенні файлів: {e}")
         sys.exit(1)
 
 def search_file(filename: str, keywords: List[str]) -> Dict[str, List[str]]:
@@ -28,7 +28,7 @@ def search_file(filename: str, keywords: List[str]) -> Dict[str, List[str]]:
                 if keyword.lower() in content:
                     results[keyword].append(filename)
     except Exception as e:
-        print(f"Помилка при читанні файлу {filename}: {e}")
+        logging.info(f"Помилка при читанні файлу {filename}: {e}")
     return results
 
 def merge_results(results: List[Dict[str, List[str]]]) -> Dict[str, List[str]]:
@@ -46,7 +46,7 @@ def get_files_list(directory: str) -> List[str]:
     try:
         return [os.path.join(directory, f) for f in os.listdir(directory) if f.endswith('.txt')]
     except Exception as e:
-        print(f"Помилка при отриманні списку файлів: {e}")
+        logging.info(f"Помилка при отриманні списку файлів: {e}")
         sys.exit(1)
 
 def generate_keywords(num_keywords: int) -> List[str]:

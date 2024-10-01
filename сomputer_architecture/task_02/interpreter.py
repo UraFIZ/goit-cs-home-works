@@ -37,15 +37,15 @@ def main():
         try:
             text = input('Введіть вираз (або "exit" для виходу): ')
             if text.lower() == "exit":
-                print("Вихід із програми.")
+                logging.info("Вихід із програми.")
                 break
             lexer = Lexer(text)
             parser = Parser(lexer)
             interpreter = Interpreter(parser)
             result = interpreter.interpret()
-            print(result)
+            logging.info(result)
         except Exception as e:
-            print(e)
+            logging.info(e)
 
 if __name__ == "__main__":
     main()
