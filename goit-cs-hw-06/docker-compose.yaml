@@ -9,7 +9,7 @@ services:
       - MONGO_URI=${MONGO_URI}
     volumes:
       - ./client:/app/client
-    command: python main.py
+    command: python3 main.py
 
   socket_server:
     build: .
@@ -17,4 +17,4 @@ services:
       - MONGO_URI=${MONGO_URI}
     volumes:
       - ./client:/app/client
-    command: python socket_server.py
+    command: python3 socket_server.py
